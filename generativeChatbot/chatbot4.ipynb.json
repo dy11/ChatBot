@@ -44,7 +44,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 27,
+   "execution_count": 2,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -54,14 +54,14 @@
     "HIDDEN_UNITS = 256\n",
     "MAX_INPUT_SEQ_LENGTH = 20\n",
     "MAX_TARGET_SEQ_LENGTH = 20\n",
-    "MAX_VOCAB_SIZE = 500\n",
+    "MAX_VOCAB_SIZE = 5000\n",
     "DATA_PATH ='/Users/troyxiao/Desktop/NLP-project/movie_lines.txt'\n",
     "WEIGHT_FILE_PATH = 'model/word-weights.h5'"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 2,
+   "execution_count": 3,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -71,7 +71,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 3,
+   "execution_count": 4,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -85,7 +85,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 31,
+   "execution_count": 5,
    "metadata": {},
    "outputs": [
     {
@@ -115,7 +115,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": 6,
    "metadata": {},
    "outputs": [
     {
@@ -138,7 +138,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": 7,
    "metadata": {},
    "outputs": [
     {
@@ -179,7 +179,22 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 7,
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "num = 2000\n",
+    "questionList = questions[:num]\n",
+    "answerList = answers[:num]\n",
+    "\n",
+    "# Save training labels \n",
+    "np.save(open('./questionList.dat', 'wb'), questionList, allow_pickle=False)\n",
+    "np.save(open('./answerList.dat', 'wb'), answerList, allow_pickle=False)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -213,7 +228,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 8,
+   "execution_count": 10,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -229,48 +244,54 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 9,
+   "execution_count": 11,
    "metadata": {},
    "outputs": [],
    "source": [
     "#filter out string with length <3 or >20\n",
     "input_texts = []\n",
     "target_texts = []\n",
+    "\n",
     "for question, answer in zip(questions_filtered, answers_filtered):\n",
     "    q_len = len(question.split())\n",
     "    a_len = len(answer.split())\n",
     "    if q_len >= 2 and q_len <= 20 and a_len >= 2 and a_len <= 20:\n",
-    "        input_texts.append(question)\n",
-    "        target_texts.append(answer)"
+    "        temp_question = [w.lower() for w in nltk.word_tokenize(question)] \n",
+    "        temp_answer = [v.lower() for v in nltk.word_tokenize(answer)] \n",
+    "        temp_answer.insert(0, 'START')\n",
+    "        temp_answer.append('END')\n",
+    "        \n",
+    "        input_texts.append(temp_question)\n",
+    "        target_texts.append(temp_answer)"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 10,
+   "execution_count": 12,
    "metadata": {},
    "outputs": [
     {
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "well i thought we would start with pronunciation if that is okay with you\n",
-      "not the hacking and gagging and spitting part  please\n",
+      "['well', 'i', 'thought', 'we', 'would', 'start', 'with', 'pronunciation', 'if', 'that', 'is', 'okay', 'with', 'you']\n",
+      "['START', 'not', 'the', 'hacking', 'and', 'gagging', 'and', 'spitting', 'part', 'please', 'END']\n",
       "\n",
       "\n",
-      "not the hacking and gagging and spitting part  please\n",
-      "okay then how about we try out some french cuisine  saturday  night\n",
+      "['not', 'the', 'hacking', 'and', 'gagging', 'and', 'spitting', 'part', 'please']\n",
+      "['START', 'okay', 'then', 'how', 'about', 'we', 'try', 'out', 'some', 'french', 'cuisine', 'saturday', 'night', 'END']\n",
       "\n",
       "\n",
-      "you are asking me out  that is so cute that is your name again\n",
-      "forget it\n",
+      "['you', 'are', 'asking', 'me', 'out', 'that', 'is', 'so', 'cute', 'that', 'is', 'your', 'name', 'again']\n",
+      "['START', 'forget', 'it', 'END']\n",
       "\n",
       "\n",
-      "gosh if only we could find kat a boyfriend\n",
-      "let me see what i can do\n",
+      "['gosh', 'if', 'only', 'we', 'could', 'find', 'kat', 'a', 'boyfriend']\n",
+      "['START', 'let', 'me', 'see', 'what', 'i', 'can', 'do', 'END']\n",
       "\n",
       "\n",
-      "c'esc ma tete this is my head\n",
-      "right  see  you are ready for the quiz\n",
+      "[\"c'esc\", 'ma', 'tete', 'this', 'is', 'my', 'head']\n",
+      "['START', 'right', 'see', 'you', 'are', 'ready', 'for', 'the', 'quiz', 'END']\n",
       "\n",
       "\n"
      ]
@@ -285,7 +306,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 11,
+   "execution_count": 13,
    "metadata": {},
    "outputs": [
     {
@@ -304,120 +325,60 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 12,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# Create a dictionary for the frequency of the vocabulary\n",
-    "vocab = {}\n",
-    "for question in input_texts:\n",
-    "    for word in question.split():\n",
-    "        if word not in vocab:\n",
-    "            vocab[word] = 1\n",
-    "        else:\n",
-    "            vocab[word] += 1\n",
-    "            \n",
-    "for answer in target_texts:\n",
-    "    for word in answer.split():\n",
-    "        if word not in vocab:\n",
-    "            vocab[word] = 1\n",
-    "        else:\n",
-    "            vocab[word] += 1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 13,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# encode the data\n",
-    "input_vocab = {}\n",
-    "target_vocab = {}\n",
-    "\n",
-    "for question, answer in zip(input_texts, target_texts):\n",
-    "    for q in question.split():\n",
-    "        if q not in input_vocab:\n",
-    "            input_vocab[q] = 1\n",
-    "        else:\n",
-    "            input_vocab[q] += 1\n",
-    "            \n",
-    "    for a in answer.split():\n",
-    "        if a not in target_vocab:\n",
-    "            target_vocab[a] = 1\n",
-    "        else:\n",
-    "            target_vocab[a] += 1"
-   ]
-  },
-  {
-   "cell_type": "code",
    "execution_count": 14,
    "metadata": {},
    "outputs": [],
    "source": [
-    "# Remove rare words from the vocabulary.\n",
-    "# We will aim to replace fewer than 5% of words with <UNK>\n",
-    "threshold = 10\n",
-    "count = 0\n",
-    "for k,v in vocab.items():\n",
-    "    if v >= threshold:\n",
-    "        count += 1"
+    "# Create a dictionary for the frequency of the vocabulary\n",
+    "input_counter = Counter()\n",
+    "target_counter = Counter()\n",
+    "\n",
+    "for question in input_texts:\n",
+    "    for word in question:\n",
+    "        if word not in input_counter:\n",
+    "            input_counter[word] = 1\n",
+    "        else:\n",
+    "            input_counter[word] += 1\n",
+    "            \n",
+    "for answer in target_texts:\n",
+    "    for word in answer:\n",
+    "        if word not in target_counter:\n",
+    "            target_counter[word] = 1\n",
+    "        else:\n",
+    "            target_counter[word] += 1"
    ]
   },
   {
    "cell_type": "code",
    "execution_count": 15,
    "metadata": {},
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "('Size of total vocab:', 45978)\n",
-      "('Size of vocab we will use:', 8100)\n"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
-    "print(\"Size of total vocab:\", len(vocab))\n",
-    "print(\"Size of vocab we will use:\", count)"
+    "# encode the data\n",
+    "input_word2idx = dict()\n",
+    "target_word2idx = dict()\n",
+    "\n",
+    "for idx, word in enumerate(input_counter.most_common(MAX_VOCAB_SIZE)):\n",
+    "    input_word2idx[word[0]] = idx + 2\n",
+    "for idx, word in enumerate(target_counter.most_common(MAX_VOCAB_SIZE)):\n",
+    "    target_word2idx[word[0]] = idx + 1\n",
+    "\n",
+    "input_word2idx['PAD'] = 0\n",
+    "input_word2idx['UNK'] = 1\n",
+    "target_word2idx['UNK'] = 0"
    ]
   },
   {
    "cell_type": "code",
    "execution_count": 16,
    "metadata": {},
-   "outputs": [],
-   "source": [
-    "# In case we want to use a different vocabulary sizes for the source and target text, \n",
-    "# we can set different threshold values.\n",
-    "# Nonetheless, we will create dictionaries to provide a unique integer for each word.\n",
-    "input_word2idx = {}\n",
-    "word_num = 0\n",
-    "for word, count in vocab.items():\n",
-    "    if count >= threshold:\n",
-    "        input_word2idx[word] = word_num\n",
-    "        word_num += 1\n",
-    "        \n",
-    "target_word2idx = {}\n",
-    "word_num = 0\n",
-    "for word, count in vocab.items():\n",
-    "    if count >= threshold:\n",
-    "        target_word2idx[word] = word_num\n",
-    "        word_num += 1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 17,
-   "metadata": {},
    "outputs": [
     {
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "{'raining': 4011, 'yellow': 1991, 'four': 4013, 'woods': 0, \"friend's\": 6051, 'hanging': 1, 'prices': 3375, 'woody': 2, 'gabrielle': 1992, 'payoff': 1993}\n",
-      "{'raining': 4011, 'yellow': 1991, 'four': 4013, 'woods': 0, \"friend's\": 6051, 'hanging': 1, 'prices': 3375, 'woody': 2, 'gabrielle': 1992, 'payoff': 1993}\n"
+      "{'neo': 4704, 'uhura': 4433, 'pardon': 869, 'hats': 4386, 'yellow': 1511, 'four': 312, 'woods': 2088, 'sleep': 358, 'personally': 1453, 'superman': 2628}\n",
+      "{'uhura': 2835, 'pony': 4770, 'pardon': 892, 'hats': 4639, 'yellow': 1529, 'four': 320, 'woods': 1946, 'sleep': 355, 'child': 651, 'superman': 2912}\n"
      ]
     }
    ],
@@ -432,23 +393,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 18,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "# Add the unique tokens to the vocabulary dictionaries.\n",
-    "codes = ['<PAD>','<EOS>','<UNK>','<GO>']\n",
-    "\n",
-    "for code in codes:\n",
-    "    input_word2idx[code] = len(input_word2idx)+1\n",
-    "    \n",
-    "for code in codes:\n",
-    "    target_word2idx[code] = len(target_word2idx)+1"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 19,
+   "execution_count": 17,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -461,7 +406,35 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 20,
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{0: 'PAD', 1: 'UNK', 2: 'you', 3: 'i', 4: 'the', 5: 'is', 6: 'not', 7: 'to', 8: 'it', 9: 'a'}\n",
+      "{'neo': 4704, 'uhura': 4433, 'pardon': 869, 'hats': 4386, 'yellow': 1511, 'four': 312, 'woods': 2088, 'sleep': 358, 'personally': 1453, 'superman': 2628}\n",
+      "{0: 'UNK', 1: 'START', 2: 'END', 3: 'you', 4: 'i', 5: 'not', 6: 'the', 7: 'is', 8: 'to', 9: 'it'}\n"
+     ]
+    }
+   ],
+   "source": [
+    "# see some example\n",
+    "inputpairs = {k: input_idx2word[k] for k in input_idx2word.keys()[:10]}\n",
+    "print inputpairs\n",
+    "inputpairs2 = {k: input_word2idx[k] for k in input_word2idx.keys()[:10]}\n",
+    "print inputpairs2\n",
+    "#print input_word2idx.get('you')\n",
+    "#print input_idx2word.get(402)\n",
+    "\n",
+    "targetpairs = {k: target_idx2word[k] for k in target_idx2word.keys()[:10]}\n",
+    "print targetpairs"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -473,7 +446,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 21,
+   "execution_count": 20,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -501,6 +474,23 @@
     "context['decoder_max_seq_length'] = decoder_max_seq_length\n",
     "\n",
     "np.save('model/word-context.npy', context)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[1682, 54, 135, 18, 74, 152, 3326, 9, 1009]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(encoder_input_data[3])"
    ]
   },
   {
@@ -533,7 +523,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 25,
+   "execution_count": 23,
    "metadata": {},
    "outputs": [
     {
@@ -572,7 +562,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 28,
+   "execution_count": 24,
    "metadata": {},
    "outputs": [
     {
@@ -580,7 +570,9 @@
      "output_type": "stream",
      "text": [
       "Epoch 1/2\n",
-      "125/864 [===>..........................] - ETA: 8:49:28 - loss: 0.5283"
+      "864/864 [==============================] - 2460s 3s/step - loss: 1.8814 - val_loss: 1.8206\n",
+      "Epoch 2/2\n",
+      " 97/864 [==>...........................] - ETA: 33:06 - loss: 1.7961"
      ]
     },
     {
@@ -590,7 +582,7 @@
      "traceback": [
       "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
       "\u001b[0;31mKeyboardInterrupt\u001b[0m                         Traceback (most recent call last)",
-      "\u001b[0;32m<ipython-input-28-257d8f1ac673>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m     17\u001b[0m                     \u001b[0mvalidation_data\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mtest_gen\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     18\u001b[0m                     \u001b[0mvalidation_steps\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mtest_num_batches\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 19\u001b[0;31m                     callbacks=[checkpoint])\n\u001b[0m\u001b[1;32m     20\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     21\u001b[0m \u001b[0mmodel\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msave_weights\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mWEIGHT_FILE_PATH\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m<ipython-input-24-257d8f1ac673>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m     17\u001b[0m                     \u001b[0mvalidation_data\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mtest_gen\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     18\u001b[0m                     \u001b[0mvalidation_steps\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mtest_num_batches\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 19\u001b[0;31m                     callbacks=[checkpoint])\n\u001b[0m\u001b[1;32m     20\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     21\u001b[0m \u001b[0mmodel\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msave_weights\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mWEIGHT_FILE_PATH\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
       "\u001b[0;32m/Users/troyxiao/.local/lib/python2.7/site-packages/keras/legacy/interfaces.pyc\u001b[0m in \u001b[0;36mwrapper\u001b[0;34m(*args, **kwargs)\u001b[0m\n\u001b[1;32m     89\u001b[0m                 warnings.warn('Update your `' + object_name + '` call to the ' +\n\u001b[1;32m     90\u001b[0m                               'Keras 2 API: ' + signature, stacklevel=2)\n\u001b[0;32m---> 91\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0mfunc\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0margs\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     92\u001b[0m         \u001b[0mwrapper\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_original_function\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mfunc\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     93\u001b[0m         \u001b[0;32mreturn\u001b[0m \u001b[0mwrapper\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
       "\u001b[0;32m/Users/troyxiao/.local/lib/python2.7/site-packages/keras/engine/training.pyc\u001b[0m in \u001b[0;36mfit_generator\u001b[0;34m(self, generator, steps_per_epoch, epochs, verbose, callbacks, validation_data, validation_steps, class_weight, max_queue_size, workers, use_multiprocessing, shuffle, initial_epoch)\u001b[0m\n\u001b[1;32m   1416\u001b[0m             \u001b[0muse_multiprocessing\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0muse_multiprocessing\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1417\u001b[0m             \u001b[0mshuffle\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mshuffle\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 1418\u001b[0;31m             initial_epoch=initial_epoch)\n\u001b[0m\u001b[1;32m   1419\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1420\u001b[0m     \u001b[0;34m@\u001b[0m\u001b[0minterfaces\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mlegacy_generator_methods_support\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
       "\u001b[0;32m/Users/troyxiao/.local/lib/python2.7/site-packages/keras/engine/training_generator.pyc\u001b[0m in \u001b[0;36mfit_generator\u001b[0;34m(model, generator, steps_per_epoch, epochs, verbose, callbacks, validation_data, validation_steps, class_weight, max_queue_size, workers, use_multiprocessing, shuffle, initial_epoch)\u001b[0m\n\u001b[1;32m    215\u001b[0m                 outs = model.train_on_batch(x, y,\n\u001b[1;32m    216\u001b[0m                                             \u001b[0msample_weight\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0msample_weight\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 217\u001b[0;31m                                             class_weight=class_weight)\n\u001b[0m\u001b[1;32m    218\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    219\u001b[0m                 \u001b[0mouts\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mto_list\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mouts\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
@@ -628,7 +620,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 25,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -721,12 +713,80 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 29,
    "metadata": {},
-   "outputs": [],
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'i am not '"
+      ]
+     },
+     "execution_count": 29,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
    "source": [
     "bot = ChatBot()\n",
-    "bot.reply('what is your name')"
+    "bot.reply('please let me know if you are avaiable')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n",
+      "i am not \n"
+     ]
+    }
+   ],
+   "source": [
+    "for q in questionList[10:50]:\n",
+    "    print bot.reply(q)"
    ]
   },
   {
