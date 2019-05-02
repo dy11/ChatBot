@@ -6,7 +6,7 @@ This repo is the final project of COSC-572.
 
 ## Floder
     .
-    ├── Eval                     # This file.
+    ├── Eval                     # Evaluation script
     ├── RetrievalBasedChatbot    # Retrieval Based Model
     ├── data/cornell movie-dialogs corpus # Dataset
     ├── generativeChatbot        # Generative Model
