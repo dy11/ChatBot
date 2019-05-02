@@ -27,3 +27,4 @@ reward function.
 * [Yu Xiao](https://github.com/troyxiao) [yx151@georgetown.edu]
 (mailto:yx151@georgetown.edu)
 * [Jiarong Yu](https://github.com/zts212653)[jy576@georgetown.edu]
+* [Shuo Liu](https://github.com/tenpages)
