@@ -6,12 +6,12 @@ This repo is the final project of COSC-572.
 
 ## Floder
     .
-    ├── Eval                     # Evaluation script
-    ├── RetrievalBasedChatbot    # Retrieval Based Model
+    ├── Eval                              # Evaluation script
+    ├── RetrievalBasedChatbot             # Retrieval Based Model
     ├── data/cornell movie-dialogs corpus # Dataset
-    ├── generativeChatbot        # Generative Model
-    ├── rl                       # Reinforcement Learning Method
-    └── test                     # Parts of result for testing.
+    ├── generativeChatbot                 # Generative Model
+    ├── rl                                # Reinforcement Learning Method
+    └── test                              # Parts of result for testing.
 
 ## Goal
 
