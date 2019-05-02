@@ -4,6 +4,15 @@
 
 This repo is the final project of COSC-572. 
 
+## Floder
+    .
+    ├── Eval                     # This file.
+    ├── RetrievalBasedChatbot    # Retrieval Based Model
+    ├── data/cornell movie-dialogs corpus # Dataset
+    ├── generativeChatbot        # Generative Model
+    ├── rl                       # Reinforcement Learning Method
+    └── test                     # Parts of result for testing.
+
 ## Goal
 
 We aim to build a Chatbot based the movie dialogs dataset to produce interactive conversations. We will
@@ -11,10 +20,6 @@ experiment with both generative and retrieval-based models to compare the result
 model, the Sequence To Sequence (seq2seq) model introduced in Learning Phrase Representations using RNN
 Encoder-Decoder for Statistical Machine Translation, we will try to improve it using policy gradient with
 reward function.
-
-## Dataset
-
-## Approach
 
 ## Author
 
